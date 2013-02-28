@@ -1,0 +1,2 @@
+alembic https://bitbucket.org/zzzeek/alembic
+linux git://github.com/torvalds/linux.git
