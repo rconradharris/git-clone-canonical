@@ -11,19 +11,22 @@ GCC_REPO_PATH = os.path.expanduser('~/.git-clone-canonical')
 
 
 class Repo(object):
-    def __init__(self, name, location, rcs='git', keywords=None):
+    def __init__(self, name, location, keywords=None, lang=None, rcs='git'):
         self.name = name
         self.location = location
         self.rcs = rcs
 
         if isinstance(keywords, basestring):
             keywords = set(keywords.split(','))
-
         self.keywords = keywords or set()
 
+        if isinstance(lang, basestring):
+            lang = set(lang.split(','))
+        self.lang = lang or set()
+
     @property
-    def search_terms(self):
-        return set([self.name]) | self.keywords
+    def languages(self):
+        return map(str.upper, sorted(self.lang))
 
     def __repr__(self):
         return '<Repo %s>' % self.name
@@ -101,10 +104,18 @@ def clone(name):
 
 
 def search(substring):
+    substring = substring.lower()
     count = 0
     for repo in _repos():
-        if substring.lower() in repo.search_terms:
-            print repo.name, repo.location
+        if substring in repo.name or substring in repo.keywords:
+            parts = [repo.name]
+
+            if repo.lang:
+                parts.append('(%s)' % ', '.join(repo.languages))
+
+            parts.append(repo.location)
+            print ' '.join(parts)
+
             count += 1
 
     match = 'matches' if count > 1 else 'match'

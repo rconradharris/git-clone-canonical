@@ -1,3 +1,12 @@
+- locations-lint sanity check
+    - alphabetized by name
+    - unique on name
+    - language is known
+    - rcs is known
+    - meta-tag is known
+    - meta-values are alphabetized and unique
+
+
 - PEP8 checks on code
 - Since this can clone hg repos as well, perhaps this shouldn't be a git
   extension; may be it should be get-the-code?

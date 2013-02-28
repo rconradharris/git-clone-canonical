@@ -1,28 +1,28 @@
-Font-Awesome https://github.com/FortAwesome/Font-Awesome
-alembic https://bitbucket.org/zzzeek/alembic RCS=hg KEYWORDS=sqlalchemy
-angular https://github.com/angular/angular.js
-backbone git://github.com/documentcloud/backbone.git
-bootstrap git://github.com/twitter/bootstrap.git
-cinder git://github.com/openstack/cinder.git KEYWORDS=openstack
-d3 git://github.com/mbostock/d3.git
-django git://github.com/django/django.git
-git git://github.com/git/git.git
+Font-Awesome https://github.com/FortAwesome/Font-Awesome LANG=js,css,less,sass
+alembic https://bitbucket.org/zzzeek/alembic KEYWORDS=sqlalchemy LANG=python RCS=hg
+angular https://github.com/angular/angular.js LANG=js
+backbone git://github.com/documentcloud/backbone.git LANG=js
+bootstrap git://github.com/twitter/bootstrap.git LANG=css,js,less
+cinder git://github.com/openstack/cinder.git KEYWORDS=openstack LANG=python
+d3 git://github.com/mbostock/d3.git LANG=js
+django git://github.com/django/django.git LANG=python
+git git://github.com/git/git.git LANG=C
 gitignore git://github.com/github/gitignore.git
-glance git://github.com/openstack/glance.git KEYWORDS=openstack
-homebrew git://github.com/mxcl/homebrew.git
-horizon git://github.com/openstack/horizon.git KEYWORDS=openstack
-html5-boilerplate git://github.com/h5bp/html5-boilerplate.git
-jekyll git://github.com/mojombo/jekyll.git
-jquery git://github.com/jquery/jquery.git KEYWORDS=jquery
-jquery-mobile git://github.com/jquery/jquery-mobile.git KEYWORDS=jquery
-jquery-ui git://github.com/jquery/jquery-ui.git KEYWORDS=jquery
-keystone git://github.com/openstack/keystone.git KEYWORDS=openstack
-linux git://github.com/torvalds/linux.git
-node git://github.com/joyent/node.git
-nova git://github.com/openstack/nova.git KEYWORDS=openstack
-oslo git://github.com/openstack/oslo.git KEYWORDS=openstack
-python-novaclient git://github.com/openstack/python-novaclient.git KEYWORDS=openstack,nova
-quantum git://github.com/openstack/quantum.git KEYWORDS=openstack
-rails git://github.com/rails/rails.git
-redis git://github.com/antirez/redis.git
-swift git://github.com/openstack/swift.git KEYWORDS=openstack
+glance git://github.com/openstack/glance.git KEYWORDS=openstack LANG=python
+homebrew git://github.com/mxcl/homebrew.git LANG=ruby
+horizon git://github.com/openstack/horizon.git KEYWORDS=openstack LANG=python
+html5-boilerplate git://github.com/h5bp/html5-boilerplate.git LANG=js,css
+jekyll git://github.com/mojombo/jekyll.git LANG=ruby
+jquery git://github.com/jquery/jquery.git KEYWORDS=jquery LANG=js
+jquery-mobile git://github.com/jquery/jquery-mobile.git KEYWORDS=jquery LANG=js
+jquery-ui git://github.com/jquery/jquery-ui.git KEYWORDS=jquery LANG=js
+keystone git://github.com/openstack/keystone.git KEYWORDS=openstack LANG=python
+linux git://github.com/torvalds/linux.git LANG=C
+node git://github.com/joyent/node.git LANG=js
+nova git://github.com/openstack/nova.git KEYWORDS=openstack LANG=python
+oslo git://github.com/openstack/oslo.git KEYWORDS=openstack LANG=python
+python-novaclient git://github.com/openstack/python-novaclient.git KEYWORDS=openstack,nova LANG=python
+quantum git://github.com/openstack/quantum.git KEYWORDS=openstack LANG=python
+rails git://github.com/rails/rails.git LANG=ruby
+redis git://github.com/antirez/redis.git LANG=c
+swift git://github.com/openstack/swift.git KEYWORDS=openstack LANG=python
