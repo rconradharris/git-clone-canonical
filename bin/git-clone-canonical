@@ -46,7 +46,7 @@ def clone(name):
         sys.exit(1)
 
     if repo.rcs == 'git':
-        subprocess.check_call(['git', 'clone', location])
+        subprocess.check_call(['git', 'clone', repo.location])
     elif repo.rcs == 'hg':
         print 'This project uses Mercurial (hg). You can clone it using:\n'
         print 'hg clone %s' % repo.location
@@ -70,7 +70,12 @@ def search(substring):
 def update():
     if os.path.exists(GCC_REPO_PATH):
         # TODO: ensure clean working directory
-        subprocess.check_call(['git', 'pull', 'origin'])
+        cwd = os.getcwd()
+        os.chdir(GCC_REPO_PATH)
+        try:
+            subprocess.check_call(['git', 'pull', 'origin'])
+        finally:
+            os.chdir(cwd)
     else:
         subprocess.check_call(['git', 'clone', GCC_REPO_URL, GCC_REPO_PATH])
 
