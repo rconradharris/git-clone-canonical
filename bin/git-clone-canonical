@@ -11,10 +11,19 @@ GCC_REPO_PATH = os.path.expanduser('~/.git-clone-canonical')
 
 
 class Repo(object):
-    def __init__(self, name, location, rcs='git'):
+    def __init__(self, name, location, rcs='git', keywords=None):
         self.name = name
         self.location = location
         self.rcs = rcs
+
+        if isinstance(keywords, basestring):
+            keywords = set(keywords.split(','))
+
+        self.keywords = keywords or set()
+
+    @property
+    def search_terms(self):
+        return set([self.name]) | self.keywords
 
     def __repr__(self):
         return '<Repo %s>' % self.name
@@ -42,21 +51,25 @@ def _location_lines():
 
 
 def _get_by_name(name):
+    for repo in _repos:
+        if repo.name == name:
+            return repo
+
+
+def _repos():
     for line in _location_lines():
         parts = line.split()
-        if parts[0] == name:
-            repo_kwargs = {}
-            for meta_string in parts[2:]:
-                key, value = meta_string.split('=')
-                repo_kwargs[key.lower()]=value
 
-            return Repo(parts[0], parts[1], **repo_kwargs)
+        repo_kwargs = {}
+        for meta_string in parts[2:]:
+            key, value = meta_string.split('=')
+            repo_kwargs[key.lower()] = value
 
+        yield Repo(parts[0], parts[1], **repo_kwargs)
 
 
 def _clone_git(repo):
     subprocess.check_call(['git', 'clone', repo.location])
-
 
 
 def binary_exists(name):
@@ -92,10 +105,9 @@ def clone(name):
 
 def search(substring):
     count = 0
-    for line in _location_lines():
-        parts = line.split()
-        if substring.lower() in parts[0].lower():
-            print line
+    for repo in _repos():
+        if substring.lower() in repo.search_terms:
+            print repo.name, repo.location
             count += 1
 
     match = 'matches' if count > 1 else 'match'
