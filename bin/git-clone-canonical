@@ -50,12 +50,6 @@ def _location_lines():
                 yield line
 
 
-def _get_by_name(name):
-    for repo in _repos:
-        if repo.name == name:
-            return repo
-
-
 def _repos():
     for line in _location_lines():
         parts = line.split()
@@ -88,7 +82,10 @@ def _clone_hg(repo):
 
 
 def clone(name):
-    repo = _get_by_name(name)
+    repo = None
+    for repo_ in _repos():
+        if repo_.name == name:
+            repo = repo_
 
     if not repo:
         print >> sys.stderr, "No match found for '%s'" % name
