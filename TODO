@@ -1,2 +1,9 @@
+- auto-update locations.txt if older then a day (later a week)
 - PEP8 checks on code
 - script to ensure no dup names in locations.txt
+- Since this can clone hg repos as well, perhaps this shouldn't be a git
+  extension; may be it should be get-the-code?
+
+  Counter-argument: The vast majority of repos will be git, and people are
+  used to typing to git to grab code, so this fits seemlessly into that
+  process.

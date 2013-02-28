@@ -5,7 +5,7 @@ import sys
 
 
 GCC_REPO_URL='git://github.com/rconradharris/git-clone-canonical'
-GCC_REPO_PATH = '/usr/local/git-clone-canonical'
+GCC_REPO_PATH = os.path.expanduser('~/.git-clone-canonical')
 
 
 class Repo(object):
@@ -19,7 +19,8 @@ class Repo(object):
 
 
 def _location_lines():
-    with open(os.path.join(GCC_REPO_PATH, 'locations.txt')) as f:
+    path = os.path.join(GCC_REPO_PATH, 'locations.txt')
+    with open(path) as f:
         for line in f:
             line = line.strip()
             if line:
@@ -38,6 +39,27 @@ def _get_by_name(name):
             return Repo(parts[0], parts[1], **repo_kwargs)
 
 
+
+def _clone_git(repo):
+    subprocess.check_call(['git', 'clone', repo.location])
+
+
+
+def binary_exists(name):
+    return subprocess.call(['which', name]) == 0
+
+
+def _clone_hg(repo):
+    if binary_exists('hg'):
+        print 'This project uses Mercurial (hg). Cloning using hg...'
+        subprocess.check_call(['hg', 'clone', repo.location])
+    else:
+        print 'This project uses Mercurial (hg) which does not appear to be'\
+              ' installed. After '
+        print 'installing hg, you can clone it using:\n'
+        print 'hg clone %s' % repo.location
+
+
 def clone(name):
     repo = _get_by_name(name)
 
@@ -45,11 +67,10 @@ def clone(name):
         print >> sys.stderr, "No match found for '%s'" % name
         sys.exit(1)
 
-    if repo.rcs == 'git':
-        subprocess.check_call(['git', 'clone', repo.location])
-    elif repo.rcs == 'hg':
-        print 'This project uses Mercurial (hg). You can clone it using:\n'
-        print 'hg clone %s' % repo.location
+
+    clone_func = globals().get('_clone_%s' % repo.rcs)
+    if clone_func:
+        clone_func(repo)
     else:
         print >> sys.stderr, "Unrecognized RCS type '%s'" % repo.rcs
         sys.exit(1)
