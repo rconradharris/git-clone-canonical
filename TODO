@@ -1,4 +1,3 @@
-- auto-update locations.txt if older then a day (later a week)
 - PEP8 checks on code
 - script to ensure no dup names in locations.txt
 - Since this can clone hg repos as well, perhaps this shouldn't be a git

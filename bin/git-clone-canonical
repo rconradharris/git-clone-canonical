@@ -2,8 +2,10 @@
 import os
 import subprocess
 import sys
+import time
 
 
+AUTO_UPDATE_AGE = 86400 * 7
 GCC_REPO_URL='git://github.com/rconradharris/git-clone-canonical'
 GCC_REPO_PATH = os.path.expanduser('~/.git-clone-canonical')
 
@@ -16,6 +18,18 @@ class Repo(object):
 
     def __repr__(self):
         return '<Repo %s>' % self.name
+
+
+def _check_auto_update():
+    path = os.path.join(GCC_REPO_PATH, 'locations.txt')
+    age = time.time() - os.path.getmtime(path)
+
+    # Touch file to record that we checked
+    os.utime(path, None)
+
+    if age > AUTO_UPDATE_AGE:
+        print 'Out-of-date locations.txt detected. Auto-updating...'
+        update()
 
 
 def _location_lines():
@@ -111,6 +125,8 @@ def main():
     if not os.path.exists(GCC_REPO_PATH):
         print >> sys.stderr, "Run git-clone-canonical --update first"
         sys.exit(1)
+
+    _check_auto_update()
 
     if '--search' in sys.argv:
         search(sys.argv[-1])
