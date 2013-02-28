@@ -94,7 +94,7 @@ def search(substring):
     count = 0
     for line in _location_lines():
         parts = line.split()
-        if substring in parts[0]:
+        if substring.lower() in parts[0].lower():
             print line
             count += 1
 
