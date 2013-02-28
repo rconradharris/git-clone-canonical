@@ -1,0 +1,2 @@
+- PEP8 checks on code
+- script to ensure no dup names in locations.txt

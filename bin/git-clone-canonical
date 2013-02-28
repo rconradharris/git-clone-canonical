@@ -1,24 +1,80 @@
 #!/usr/bin/env python
 import os
+import subprocess
 import sys
 
 
-REPO_URL='git://github.com/rconradharris/git-clone-canonical'
-REPO_PATH = '/usr/local/git-clone-canonical'
+GCC_REPO_URL='git://github.com/rconradharris/git-clone-canonical'
+GCC_REPO_PATH = '/usr/local/git-clone-canonical'
+
+
+class Repo(object):
+    def __init__(self, name, location, rcs='git'):
+        self.name = name
+        self.location = location
+        self.rcs = rcs
+
+    def __repr__(self):
+        return '<Repo %s>' % self.name
+
+
+def _location_lines():
+    with open(os.path.join(GCC_REPO_PATH, 'locations.txt')) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                yield line
+
+
+def _get_by_name(name):
+    for line in _location_lines():
+        parts = line.split()
+        if parts[0] == name:
+            repo_kwargs = {}
+            for meta_string in parts[2:]:
+                key, value = meta_string.split('=')
+                repo_kwargs[key.lower()]=value
+
+            return Repo(parts[0], parts[1], **repo_kwargs)
 
 
 def clone(name):
-    print 'cloning', name
-    pass
+    repo = _get_by_name(name)
+
+    if not repo:
+        print >> sys.stderr, "No match found for '%s'" % name
+        sys.exit(1)
+
+    if repo.rcs == 'git':
+        subprocess.check_call(['git', 'clone', location])
+    elif repo.rcs == 'hg':
+        print 'This project uses Mercurial (hg). You can clone it using:\n'
+        print 'hg clone %s' % repo.location
+    else:
+        print >> sys.stderr, "Unrecognized RCS type '%s'" % repo.rcs
+        sys.exit(1)
 
 
 def search(substring):
-    print 'searching', substring
+    count = 0
+    for line in _location_lines():
+        parts = line.split()
+        if substring in parts[0]:
+            print line
+            count += 1
+
+    match = 'matches' if count > 1 else 'match'
+    print '%d %s found' % (count, match)
 
 
 def update():
-    print 'updating'
-    pass
+    if os.path.exists(GCC_REPO_PATH):
+        # TODO: ensure clean working directory
+        subprocess.check_call(['git', 'pull', 'origin'])
+    else:
+        subprocess.check_call(['git', 'clone', GCC_REPO_URL, GCC_REPO_PATH])
+
+    print 'Updated'
 
 
 def main():
@@ -26,7 +82,7 @@ def main():
         update()
         return
 
-    if not os.path.exists(REPO_PATH):
+    if not os.path.exists(GCC_REPO_PATH):
         print >> sys.stderr, "Run git-clone-canonical --update first"
         sys.exit(1)
 
@@ -34,8 +90,13 @@ def main():
         search(sys.argv[-1])
         return
 
-    clone(sys.argv[1])
+    if len(sys.argv) < 2:
+        print >> sys.stderr, 'usage: git clone-canonical <name>'
+        print >> sys.stderr, '       git clone-canonical --update'
+        print >> sys.stderr, '       git clone-canonical --search <substring>'
+        sys.exit(1)
 
+    clone(sys.argv[1])
 
 
 if __name__ == '__main__':
