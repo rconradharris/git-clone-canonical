@@ -1,8 +1,15 @@
 - PEP8 checks on code
-- script to ensure no dup names in locations.txt
 - Since this can clone hg repos as well, perhaps this shouldn't be a git
   extension; may be it should be get-the-code?
 
   Counter-argument: The vast majority of repos will be git, and people are
   used to typing to git to grab code, so this fits seemlessly into that
   process.
+
+- --recursive - could use requirements.txt or Gemfile to recursive clone
+  dependent projects so that you have all related source code at once.
+
+  git clone-canonical --recursive=nova-project nova
+  cloning nova into 'nova-project'
+  cloning sqlalchemy into 'nova-project'
+  cloning sqlalchemy-migrate into 'nova-project'

@@ -1,3 +1,20 @@
+Font-Awesome https://github.com/FortAwesome/Font-Awesome
 alembic https://bitbucket.org/zzzeek/alembic RCS=hg
+angular https://github.com/angular/angular.js
+backbone git://github.com/documentcloud/backbone.git
+bootstrap git://github.com/twitter/bootstrap.git
+d3 git://github.com/mbostock/d3.git
+django git://github.com/django/django.git
+git git://github.com/git/git.git
+gitignore git://github.com/github/gitignore.git
+homebrew git://github.com/mxcl/homebrew.git
+html5-boilerplate git://github.com/h5bp/html5-boilerplate.git
+jekyll git://github.com/mojombo/jekyll.git
+jquery git://github.com/jquery/jquery.git
+jquery-mobile git://github.com/jquery/jquery-mobile.git
+jquery-ui git://github.com/jquery/jquery-ui.git
 linux git://github.com/torvalds/linux.git
-nova git://github.com/openstack/nova
+node git://github.com/joyent/node.git
+nova git://github.com/openstack/nova.git
+rails git://github.com/rails/rails.git
+redis git://github.com/antirez/redis.git
