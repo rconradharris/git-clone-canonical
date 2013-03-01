@@ -8,7 +8,7 @@ setuptools.setup(
     license='MIT',
     author='Rick Harris',
     author_email='rconradharris@gmail.com',
-    description='git clone from canonical location by name',
+    description='git clone popular repos by name not location',
     long_description=__doc__,
     packages=setuptools.find_packages(),
     zip_safe=False,

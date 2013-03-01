@@ -88,6 +88,10 @@ class Repo(object):
 
 
 def _check_auto_update():
+    if not os.path.exists(GCC_REPO_PATH):
+        update()
+        return
+
     age = time.time() - os.path.getmtime(LOCATIONS_PATH)
 
     # Touch file to record that we checked
@@ -192,10 +196,6 @@ def main():
         update()
         return
 
-    if not os.path.exists(GCC_REPO_PATH):
-        print >> sys.stderr, "Run git-clone-canonical --update first"
-        sys.exit(1)
-
     _check_auto_update()
 
     if '--search' in sys.argv:
@@ -204,8 +204,8 @@ def main():
 
     if len(sys.argv) < 2:
         print >> sys.stderr, 'usage: git clone-canonical <name>'
-        print >> sys.stderr, '       git clone-canonical --update'
         print >> sys.stderr, '       git clone-canonical --search <substring>'
+        print >> sys.stderr, '       git clone-canonical --update'
         sys.exit(1)
 
     clone(sys.argv[1])
