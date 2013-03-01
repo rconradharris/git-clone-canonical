@@ -2,7 +2,7 @@
 git-clone-canonical
 ===================
 
-`clone-canonical` is a git extension that lets you clone popular open source
+``clone-canonical`` is a git extension that lets you clone popular open source
 projects by *name* instead of *location*.
 
 
@@ -33,7 +33,7 @@ You can grab the latest repos by running::
 Search
 ======
 
-To find all repos that have `openstack` as a keyword::
+To find all repos that have ``openstack`` as a keyword::
 
     git clone-canonical --search openstack
 
@@ -42,4 +42,4 @@ To find all repos that have `openstack` as a keyword::
 Extras
 ======
 
-A repo can specify RCS=hg to signify that Mercurial should be used.
+A repo can specify ``RCS=hg`` to signify that Mercurial should be used.
