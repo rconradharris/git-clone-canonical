@@ -2,8 +2,9 @@
 git-clone-canonical
 ===================
 
-git extension that lets you easily fetch the source code for popular
-open-source projects.
+`clone-canonical` is a git extension that lets you clone popular open source
+projects by *name* instead of *location*.
+
 
 Installation
 ============
@@ -11,30 +12,34 @@ Installation
 ::
 
     pip install git-clone-canonical
-      - install binary
-      - clone repo to /usr/local/git-clone-canonical
-      - add any tab-completion hook
 
 
-Usage
+Clone
 =====
 
-::
+Clone a repo by name::
 
-    clone: git clone-canonical sqlalchemy
-    update: git clone-canonical --update
-    search: git clone-canonical --search sql
+    git clone-canonical sqlalchemy
+
+
+Update
+======
+
+You can grab the latest repos by running::
+
+    git clone-canonical --update
 
 
 Search
 ======
 
-You can search based on name or keyword.
-
-For example, to find a repo with sqlalchemy in the name you would type::
-
-    git clone-canonical --search sqlalchemy
-
-Or to find all repos related to openstack::
+To find all repos that have `openstack` as a keyword::
 
     git clone-canonical --search openstack
+
+
+
+Extras
+======
+
+A repo can specify RCS=hg to signify that Mercurial should be used.
