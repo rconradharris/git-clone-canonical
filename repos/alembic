@@ -1,0 +1,4 @@
+https://bitbucket.org/zzzeek/alembic
+KEYWORDS=sqlalchemy
+LANG=python
+RCS=hg

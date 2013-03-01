@@ -1,0 +1,3 @@
+git://github.com/openstack/swift.git
+KEYWORDS=openstack
+LANG=python

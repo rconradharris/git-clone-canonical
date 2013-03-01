@@ -1,0 +1,3 @@
+git://github.com/openstack/nova.git
+KEYWORDS=openstack
+LANG=python

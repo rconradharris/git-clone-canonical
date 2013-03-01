@@ -1,0 +1,2 @@
+git://github.com/antirez/redis.git
+LANG=c

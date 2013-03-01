@@ -8,6 +8,7 @@ import time
 AUTO_UPDATE_AGE = 86400 * 7
 GCC_REPO_URL='git://github.com/rconradharris/git-clone-canonical'
 GCC_REPO_PATH = os.path.expanduser('~/.git-clone-canonical')
+LOCATIONS_PATH = os.path.join(GCC_REPO_PATH, '.locations.txt')
 
 
 class Repo(object):
@@ -18,11 +19,65 @@ class Repo(object):
 
         if isinstance(keywords, basestring):
             keywords = set(keywords.split(','))
+
         self.keywords = keywords or set()
 
         if isinstance(lang, basestring):
             lang = set(lang.split(','))
+
         self.lang = lang or set()
+
+    def to_locations_line(self):
+        parts = [self.name, self.location]
+
+        if self.keywords:
+            parts.append('KEYWORDS=%s' % ','.join(sorted(self.keywords)))
+
+        if self.lang:
+            parts.append('LANG=%s' % ','.join(sorted(self.lang)))
+
+        if self.rcs != 'git':
+            parts.append('RCS=%s' % self.rcs)
+
+        return ' '.join(parts)
+
+    @classmethod
+    def from_locations_line(cls, line):
+        parts = line.split()
+
+        repo_kwargs = {}
+        for meta_string in parts[2:]:
+            key, value = meta_string.split('=')
+            repo_kwargs[key.lower()] = value
+
+        return cls(parts[0], parts[1], **repo_kwargs)
+
+    @classmethod
+    def from_file(cls, path):
+        name = os.path.basename(path)
+        location_seen = False
+        repo_kwargs = {}
+        with open(path) as f:
+            for line in f:
+                line = line.strip()
+                if location_seen:
+                    key, value = line.split('=')
+                    repo_kwargs[key.lower()] = value
+                else:
+                    location_seen = True
+                    location = line
+
+        return cls(name, location, **repo_kwargs)
+
+    def to_file(self, path):
+        with open(path, 'w') as f:
+            f.write('%s\n' % self.location)
+            if self.keywords:
+                f.write('KEYWORDS=%s\n' % ','.join(sorted(self.keywords)))
+            if self.lang:
+                f.write('LANG=%s\n' % ','.join(sorted(self.lang)))
+            if self.rcs != 'git':
+                f.write('RCS=%s\n' % self.rcs)
 
     @property
     def languages(self):
@@ -33,48 +88,42 @@ class Repo(object):
 
 
 def _check_auto_update():
-    path = os.path.join(GCC_REPO_PATH, 'locations.txt')
-    age = time.time() - os.path.getmtime(path)
+    age = time.time() - os.path.getmtime(LOCATIONS_PATH)
 
     # Touch file to record that we checked
-    os.utime(path, None)
+    os.utime(LOCATIONS_PATH, None)
 
     if age > AUTO_UPDATE_AGE:
         print 'Out-of-date locations.txt detected. Auto-updating...'
         update()
 
 
-def _location_lines():
-    path = os.path.join(GCC_REPO_PATH, 'locations.txt')
-    with open(path) as f:
+def _rebuild_locations_file():
+    dirname = os.path.join(GCC_REPO_PATH, 'repos')
+    with open(LOCATIONS_PATH, 'w') as f:
+        # NOTE: the sorted is needed because listdir may give us a
+        # case-insensitve sort (d E f) instead of what we want (E d f)
+        for basename in sorted(os.listdir(dirname)):
+            path = os.path.join(dirname, basename)
+            repo = Repo.from_file(path)
+            line = repo.to_locations_line()
+            f.write('%s\n' % line)
+
+
+def _get_all_repos():
+    with open(LOCATIONS_PATH) as f:
         for line in f:
             line = line.strip()
             if line:
-                yield line
-
-
-def _repos():
-    for line in _location_lines():
-        parts = line.split()
-
-        repo_kwargs = {}
-        for meta_string in parts[2:]:
-            key, value = meta_string.split('=')
-            repo_kwargs[key.lower()] = value
-
-        yield Repo(parts[0], parts[1], **repo_kwargs)
+                yield Repo.from_locations_line(line)
 
 
 def _clone_git(repo):
     subprocess.check_call(['git', 'clone', repo.location])
 
 
-def binary_exists(name):
-    return subprocess.call(['which', name]) == 0
-
-
 def _clone_hg(repo):
-    if binary_exists('hg'):
+    if subprocess.call(['which', 'hg']) == 0:
         print 'This project uses Mercurial (hg). Cloning using hg...'
         subprocess.check_call(['hg', 'clone', repo.location])
     else:
@@ -86,7 +135,7 @@ def _clone_hg(repo):
 
 def clone(name):
     repo = None
-    for repo_ in _repos():
+    for repo_ in _get_all_repos():
         if repo_.name == name:
             repo = repo_
 
@@ -106,7 +155,7 @@ def clone(name):
 def search(substring):
     substring = substring.lower()
     count = 0
-    for repo in _repos():
+    for repo in _get_all_repos():
         if substring in repo.name or substring in repo.keywords:
             parts = [repo.name]
 
@@ -134,6 +183,7 @@ def update():
     else:
         subprocess.check_call(['git', 'clone', GCC_REPO_URL, GCC_REPO_PATH])
 
+    _rebuild_locations_file()
     print 'Updated'
 
 
