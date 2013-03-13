@@ -122,19 +122,12 @@ def _get_all_repos():
                 yield Repo.from_locations_line(line)
 
 
-def _clone_git(repo):
-    subprocess.check_call(['git', 'clone', repo.location])
-
-
-def _clone_hg(repo):
-    if subprocess.call(['which', 'hg']) == 0:
-        print 'This project uses Mercurial (hg). Cloning using hg...'
-        subprocess.check_call(['hg', 'clone', repo.location])
-    else:
-        print 'This project uses Mercurial (hg) which does not appear to be'\
-              ' installed. After '
-        print 'installing hg, you can clone it using:\n'
-        print 'hg clone %s' % repo.location
+RCS = {
+    # rcs_cmd: (long_name, clone_cmd)
+    'git': ('Git', 'clone'),
+    'hg': ('Mercurial', 'clone'),
+    'svn': ('Subversion', 'co')
+}
 
 
 def clone(name):
@@ -147,13 +140,24 @@ def clone(name):
         print >> sys.stderr, "No match found for '%s'" % name
         sys.exit(1)
 
-
-    clone_func = globals().get('_clone_%s' % repo.rcs)
-    if clone_func:
-        clone_func(repo)
-    else:
+    try:
+        long_name, clone_cmd = RCS[repo.rcs]
+    except KeyError:
         print >> sys.stderr, "Unrecognized RCS type '%s'" % repo.rcs
         sys.exit(1)
+
+    rcs_cmd = repo.rcs
+
+    if subprocess.call(['which', repo.rcs]) == 0:
+        if repo.rcs != 'git':
+            print 'This project uses %(long_name)s (%(rcs_cmd)s). Cloning'\
+                  ' using %(rcs_cmd)s...' % locals()
+        subprocess.check_call([rcs_cmd, clone_cmd, repo.location])
+    else:
+        print 'This project uses %(long_name)s (%(rcs_cmd)s) which does not'\
+              ' appear to be installed. After ' % locals()
+        print 'installing %(rcs_cmd)s, you can clone it using:\n' % locals()
+        print '%(rcs_cmd)s %(clone_cmd)s %s' % repo.location
 
 
 def search(substring):

@@ -22,3 +22,5 @@
   cloning nova into 'nova-project'
   cloning sqlalchemy into 'nova-project'
   cloning sqlalchemy-migrate into 'nova-project'
+
+- BUG: hide output of `which` command
