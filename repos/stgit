@@ -1,0 +1,3 @@
+git://repo.or.cz/stgit.git
+KEYWORDS=git,stacked-git
+LANG=python
