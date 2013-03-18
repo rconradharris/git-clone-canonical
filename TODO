@@ -24,3 +24,4 @@
   cloning sqlalchemy-migrate into 'nova-project'
 
 - BUG: hide output of `which` command
+- Add version numbering

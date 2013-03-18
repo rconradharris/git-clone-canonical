@@ -124,6 +124,7 @@ def _get_all_repos():
 
 RCS = {
     # rcs_cmd: (long_name, clone_cmd)
+    'bzr': ('Bazaar', 'branch'),
     'git': ('Git', 'clone'),
     'hg': ('Mercurial', 'clone'),
     'svn': ('Subversion', 'co')

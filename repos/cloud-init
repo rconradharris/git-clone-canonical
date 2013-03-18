@@ -1,0 +1,3 @@
+lp:cloud-init
+KEYWORDS=ec2,openstack
+RCS=bzr
